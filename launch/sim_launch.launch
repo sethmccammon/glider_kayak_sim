@@ -1,0 +1,3 @@
+<launch>
+	<rosparam file="$(find glider_kayak_sim)/yaml/sim_params.yaml"/>
+</launch>

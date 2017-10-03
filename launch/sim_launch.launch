@@ -1,3 +1,5 @@
 <launch>
 	<rosparam file="$(find glider_kayak_sim)/yaml/sim_params.yaml"/>
+	<node name="world_sim" pkg="glider_kayak_sim" type="world_sim.py" output="screen"/>
+
 </launch>

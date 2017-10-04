@@ -21,8 +21,7 @@ class WorldSim(object):
     res.temperature = 0.0
     res.salinity = 0.0
     res.current = Vector3(0.0, 0.0, 0.0)
-
-    return SimQueryResposne(res)
+    return res
 
 
 

@@ -1,0 +1,4 @@
+<launch>
+	<arg name="glider_idx"/>
+	<node name="sim" ns="/glider_$(arg glider_idx)" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
+</launch>

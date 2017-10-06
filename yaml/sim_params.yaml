@@ -1,7 +1,17 @@
 simulation_data_file: /data/sim_data.csv
 
-simulation_bounds: [[36.795, -121.840], [36.795, -121.871], [36.768, -121.871], [36.768, -121.840]]
+west_bound: -125
+east_bound: -124.5
+north_bound: 45.25
+south_bound: 44.75
+#decimal degrees lat/lon
+
+depth: 200
+#meters
+
 
 num_gliders: 5
 
 num_kayaks: 2
+
+sim_speedup_factor: 10

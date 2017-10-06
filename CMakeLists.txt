@@ -54,6 +54,7 @@ add_message_files(
   FILES
   STU.msg
   KayakStatus.msg
+  GliderStatus.msg
 )
 
 ## Generate services in the 'srv' folder

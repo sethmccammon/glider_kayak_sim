@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import rospy, rospkg
+import rospy, rospkg, gsw
 
 from glider_kayak_sim.msg import STU
 from glider_kayak_sim.srv import SimQuery

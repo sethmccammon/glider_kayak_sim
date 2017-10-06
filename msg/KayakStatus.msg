@@ -1,5 +1,5 @@
-std_msgs/Float32 engine_rpm
-std_msgs/Float32 steering_servo_pos
-std_msgs/Float32 fuel_level
+float32 engine_rpm
+float32 steering_servo_pos
+float32 fuel_level
 
 #We can flesh out this list later

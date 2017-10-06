@@ -118,27 +118,27 @@ def main():
 	rospy.init_node("kayak_sim")
 
 	# Goal Waypoints
-	wpts_list = [
-					(0.0, 1.0),
-					(1.0, 1.0),
-					(1.0, 0.0),
-					(0.0, 0.0),
-				]
-	wpts = []
-	for wpt in wpts_list:
-		w = WayPoint()
-		w.position.longitude	= wpt[0]
-		w.position.latitude		= wpt[1]
-		w.position.altitude		= 0.0
-		wpts.append(w)
+	# wpts_list = [
+	# 				(0.0, 1.0),
+	# 				(1.0, 1.0),
+	# 				(1.0, 0.0),
+	# 				(0.0, 0.0),
+	# 			]
+	# wpts = []
+	# for wpt in wpts_list:
+	# 	w = WayPoint()
+	# 	w.position.longitude	= wpt[0]
+	# 	w.position.latitude		= wpt[1]
+	# 	w.position.altitude		= 0.0
+	# 	wpts.append(w)
 
-	# Init Kayak
-	kayak = Kayak(0.5, 0.5, wpts)
+	# # Init Kayak
+	# kayak = Kayak(0.5, 0.5, wpts)
 
 	# Running sim
 	rate = rospy.Rate(10) 
 	while not rospy.is_shutdown():
-		kayak.update()
+		# kayak.update()
 		rate.sleep()
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@
 import rospy
 import tf
 import math
+import random
 from math import *
 from glider_kayak_sim.srv import *
 from glider_kayak_sim.msg import *
@@ -121,10 +122,11 @@ def main():
 	rospy.init_node("kayak_sim")
 
 	# Goal Waypoints
+	rnd_loc = random.random();
 	wpts_list = [
-					(0.0, 1.0),
-					(1.0, 1.0),
-					(1.0, 0.0),
+					(0.0, rnd_loc),
+					(rnd_loc, rnd_loc),
+					(rnd_loc, 0.0),
 					(0.0, 0.0),
 				]
 	wpts = []

@@ -47,6 +47,9 @@
   <build_depend>message_generation</build_depend>
   <build_depend>geographic_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
+  <build_depend>opengl</build_depend>
+  <build_depend>glut</build_depend>
+  <build_depend>x11</build_depend>
   <run_depend>geographic_msgs</run_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>geometry_msgs</run_depend>

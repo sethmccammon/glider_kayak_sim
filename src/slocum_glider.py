@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import rospy, rospkg, haversine
+import rospy, rospkg
 
 
 

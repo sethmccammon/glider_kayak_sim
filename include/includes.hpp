@@ -1,27 +1,14 @@
 #ifndef INCLUDES_H
 #define INCLUDES_H
-#include "GL/freeglut.h"
-#include "GL/gl.h"
+#include <GL/freeglut.h>
+#include <GL/gl.h>
 #include <X11/Xlib.h>
-#include <png.h>
 #include <cstdlib>
-#include <cstdio>
-#include <string>
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <cmath>
-#include <list>
 #include <vector>
-#include <set>
-#include <map>
-#include <tuple>
-#include <sstream>
-#include <algorithm>
-#include <random>
-#include <chrono>
 #include <regex>
+#include <string>
+#include <tuple>
+#include <map>
 
 using namespace std;
 

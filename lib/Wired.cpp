@@ -19,6 +19,23 @@ void Wired::render(bool global){
 			glLineWidth(3);
 		else
 			glLineWidth(1);
+		// Hist
+		for(int i = 0; i < this->hist.size(); i++){
+			glColor4f(this->stroke.r,this->stroke.g,this->stroke.b,(double)i/this->hist.size());
+			glPushMatrix();
+				if(global)
+					glTranslatef(-get<0>(this->hist.at(i)),-get<1>(this->hist.at(i)),0);
+				else
+					glTranslatef( get<0>(this->hist.at(i)), get<1>(this->hist.at(i)),0);
+				glScalef(0.03*s,0.03*s,1);
+				glBegin(GL_POLYGON);
+					glVertex2f( 1, 0);
+					glVertex2f( 0, 1);
+					glVertex2f(-1, 0);
+					glVertex2f( 0,-1);
+				glEnd();
+			glPopMatrix();
+		}
 		if(global){
 			glTranslatef(-x,-y,0);
 			glScalef(s,s,1);
@@ -59,4 +76,11 @@ void Wired::area_selection(double min_x, double max_x, double min_y, double max_
 	if(this->y-this->s/2 < min_y) return;
 	if(this->y+this->s/2 > max_y) return;
 	this->selected = true;
+}
+
+void Wired::update(double x, double y, double t){
+	this->x = x;
+	this->y = y;
+	this->t = t;
+	this->hist.push_back(tuple<double,double,double>(x,y,t));
 }

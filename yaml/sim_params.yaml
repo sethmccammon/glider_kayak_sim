@@ -9,7 +9,6 @@ south_bound: 44.75
 depth: 200
 #meters
 
-
 num_gliders: 5
 
 num_kayaks: 2

@@ -4,11 +4,13 @@
 #include "includes.hpp"
 #include "Wired.hpp"
 
-Wired *pointer;
+Wired *cursor;
 Wired *flag;
-vector<Wired> flock;
+
+map<string,Wired*> robots;
 
 int num_kayaks			= 0;
+int num_gliders			= 0;
 
 // Status
 double origin_x			= 0;
@@ -91,27 +93,20 @@ void RenderScene();
 
 void codeTestOvunc();
 
-
 void geo_pose_callback(const ros::MessageEvent<geographic_msgs::GeoPose const>& event){
-	const ros::M_string& header = event.getConnectionHeader();
-	string topic = header.at("topic");
-	regex num_regex("(\\d+)");
-	smatch sm;
-	if(regex_search(topic, sm, num_regex)){
-		int idx = atoi(sm.str().c_str())-1;
-		const geographic_msgs::GeoPoseConstPtr& msg = event.getMessage();
-		double roll		= 0.0;
-		double pitch	= 0.0;
-		double yaw		= 0.0;
-		tf::Quaternion qt(msg->orientation.x, msg->orientation.y, msg->orientation.z, msg->orientation.w);
-		tf::Matrix3x3(qt).getRPY(roll, pitch, yaw);
-		flock.at(idx).x = msg->position.longitude;
-		flock.at(idx).y = msg->position.latitude;
-		flock.at(idx).t = 180*yaw/PI;
-	}
+	string topic = event.getConnectionHeader().at("topic");
+	const geographic_msgs::GeoPoseConstPtr& msg = event.getMessage();
+	double roll		= 0.0;
+	double pitch	= 0.0;
+	double yaw		= 0.0;
+	tf::Quaternion qt(msg->orientation.x, msg->orientation.y, msg->orientation.z, msg->orientation.w);
+	tf::Matrix3x3(qt).getRPY(roll, pitch, yaw);
+	robots[topic]->update(msg->position.longitude, msg->position.latitude, 180*yaw/PI);
 }
 
 int main(int argc, char **argv){
+		
+	char topic_name[BUFFER_SIZE];
 
 	vector<ros::Subscriber> subs;
 
@@ -120,11 +115,33 @@ int main(int argc, char **argv){
 	glutInit(&argc, argv);
 	iniGl();
 
-	// Robot Shape
-	vector<pair<double, double>> robot_shape;
-	robot_shape.push_back(pair<double, double>(0.0,0.50));
-	robot_shape.push_back(pair<double, double>(1.0,0.75));
-	robot_shape.push_back(pair<double, double>(1.0,0.25));
+	// Glider Shape
+	vector<pair<double, double>> glider_shape;
+	glider_shape.push_back(pair<double, double>(0.0,0.50));
+	glider_shape.push_back(pair<double, double>(0.1,0.55));
+	glider_shape.push_back(pair<double, double>(0.3,0.55));
+	glider_shape.push_back(pair<double, double>(0.5,0.65));
+	glider_shape.push_back(pair<double, double>(0.5,0.55));
+	glider_shape.push_back(pair<double, double>(0.7,0.55));
+	glider_shape.push_back(pair<double, double>(0.9,0.70));
+	glider_shape.push_back(pair<double, double>(0.9,0.55));
+	glider_shape.push_back(pair<double, double>(1.0,0.55));
+	glider_shape.push_back(pair<double, double>(1.0,0.45));
+	glider_shape.push_back(pair<double, double>(0.9,0.45));
+	glider_shape.push_back(pair<double, double>(0.9,0.30));
+	glider_shape.push_back(pair<double, double>(0.7,0.45));
+	glider_shape.push_back(pair<double, double>(0.5,0.45));
+	glider_shape.push_back(pair<double, double>(0.5,0.35));
+	glider_shape.push_back(pair<double, double>(0.3,0.45));
+	glider_shape.push_back(pair<double, double>(0.1,0.45));
+
+	// Kayak Shape
+	vector<pair<double, double>> kayak_shape;
+	kayak_shape.push_back(pair<double, double>(0.0,0.50));
+	kayak_shape.push_back(pair<double, double>(0.2,0.75));
+	kayak_shape.push_back(pair<double, double>(1.0,0.75));
+	kayak_shape.push_back(pair<double, double>(1.0,0.25));
+	kayak_shape.push_back(pair<double, double>(0.2,0.25));
 
 	// Mouse Shape
 	vector<pair<double, double>> pointer_shape;
@@ -147,7 +164,7 @@ int main(int argc, char **argv){
 	view_y = origin_y;
 
 	// Cursor and goal objects
-	pointer = new Wired(pointer_shape, 16, -60.0, WHITE, BLACK);
+	cursor = new Wired(pointer_shape, 16, -60.0, WHITE, BLACK);
 	flag = new Wired(goal_shape, 0.1, 0, GREEN);
 
 	// Initializing node
@@ -157,15 +174,21 @@ int main(int argc, char **argv){
 
 	// ros::NodeHandle np("~");
 	n.param<int>("num_kayaks", num_kayaks, NUM_ROBOTS);
+	n.param<int>("num_gliders", num_gliders, NUM_ROBOTS);
 
-	// Initializing robots
+	// Initializing kayaks
 	for(int i = 0; i < num_kayaks; i++){
-		flock.push_back(Wired(robot_shape, 0.1));
-		char topic_name[BUFFER_SIZE];
-		sprintf(topic_name, "/kayak_%d/geo_pose", 1+i);
+		sprintf(topic_name, "/kayak_%d/geo_pose", i);
+		robots[string(topic_name)] = new Wired(kayak_shape, 0.1, 0.0, ORANGE);
 		subs.push_back(n.subscribe(topic_name, 1000, geo_pose_callback));
 	}
 
+	// Initializing gliders
+	for(int i = 0; i < num_gliders; i++){
+		sprintf(topic_name, "/glider_%d/geo_pose", i);
+		robots[string(topic_name)] = new Wired(glider_shape, 0.1, 0.0, YELLOW);
+		subs.push_back(n.subscribe(topic_name, 1000, geo_pose_callback));
+	}
 
 	// Ready message
 	ROS_INFO("marine_viz: Initialized.");
@@ -175,7 +198,6 @@ int main(int argc, char **argv){
 
 	return 0;
 }
-
 
 // Get the horizontal and vertical screen sizes in pixel
 void getScreenResolution(int &s, int &v){
@@ -214,8 +236,8 @@ void iniGl(){
 
 // Mouse click selection
 void singleSelect(){
-	for(auto &r : flock)
-		r.point_selection(selX1,selY1);
+	for(auto &r : robots)
+		r.second->point_selection(selX1,selY1);
 }
 
 // Mouse area selection
@@ -224,8 +246,8 @@ void areaSelect(){
 	double max_x = (selX2 > selX1)?selX2:selX1;
 	double min_y = (selY2 > selY1)?selY1:selY2;
 	double max_y = (selY2 > selY1)?selY2:selY1;
-	for(auto &r : flock)
-		r.area_selection(min_x, max_x, min_y, max_y);
+	for(auto &r : robots)
+		r.second->area_selection(min_x, max_x, min_y, max_y);
 }
 
 // Screen to space conversion
@@ -233,10 +255,10 @@ double scn2space(int a){
 	return scn_scale*((double)a);
 }
 
-// Updating pointer position variables
+// Updating cursor position variables
 void cursorUpdate(int x,int y){	
-	pointer->x	= x;
-	pointer->y	= y;
+	cursor->x	= x;
+	cursor->y	= y;
 	mouseLeft	= (x == 0);
 	mouseRight	= (x == window_w-1);
 	mouseUp		= (y == 0);
@@ -385,12 +407,12 @@ void updateValues(int n){
 
 	glutTimerFunc(SIM_STEP_TIME,updateValues,0);
 
-	// Camera view will track specific flock
+	// Camera view will track specific robots
 	if(lock_view_robot){
-		for(auto const &r : flock)
-			if(r.selected){
-				view_x = r.x;
-				view_y = r.y;
+		for(auto const &r : robots)
+			if(r.second->selected){
+				view_x = r.second->x;
+				view_y = r.second->y;
 				break;
 			}
 	}
@@ -414,7 +436,10 @@ void updateValues(int n){
 	y_max = -view_y + scn_scale*window_h/2;
 
 	// String printed in the screen corner
-	sprintf(statusBuffer, "Number of robots: %02d", flock.size());
+	sprintf(statusBuffer, "Number of robots: %02d", robots.size());
+
+	if(!ros::ok())
+		exit(0);
 
 }
 
@@ -434,8 +459,8 @@ void RenderScene(){
 		glMatrixMode(GL_MODELVIEW);
 
 		// Drawing robots
-		for(auto &r : flock)
-			r.render();
+		for(auto &r : robots)
+			r.second->render();
 
 		// Goal flag
 		flag->render();
@@ -469,7 +494,7 @@ void RenderScene(){
 		gluOrtho2D(0,window_w,window_h,0);
 		glMatrixMode(GL_MODELVIEW);
 		glTranslatef(0,0,0);
-		pointer->render(0);
+		cursor->render(0);
 	glPopMatrix();
 
 	// Status display

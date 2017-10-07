@@ -7,10 +7,13 @@ Wired-Shaped object representation.
 Wire-shaped objects are defined by a list of points representing a polygon.
 */
 
-#define NONE Color(0,0,0,0)
-#define BLACK Color(0,0,0,1)
-#define WHITE Color(1,1,1,1)
-#define GREEN Color(0,1,0,1)
+#define NONE	Color(0.0, 0.0, 0.0, 0.0)
+#define BLACK	Color(0.0, 0.0, 0.0, 1.0)
+#define WHITE	Color(1.0, 1.0, 1.0, 1.0)
+#define GREEN	Color(0.0, 1.0, 0.0, 1.0)
+#define RED		Color(1.0, 0.0, 0.0, 1.0)
+#define YELLOW	Color(1.0, 1.0, 0.0, 1.0)
+#define ORANGE	Color(1.0, 0.5, 0.0, 1.0)
 
 class Color{
 	public:
@@ -28,7 +31,8 @@ class Color{
 
 class Wired{
 	public:
-		vector<pair<double, double>> shape; // Object visual shape (List of points for polygon)
+		vector<pair<double,double>> shape; // Object visual shape (List of points for polygon)
+		vector<tuple<double,double,double>> hist; // Position and orientation history
 		double x;	// Position coordinate x
 		double y;	// Position coordinate y
 		double t;	// Object heading theta (in Degrees)
@@ -41,6 +45,7 @@ class Wired{
 		void render(bool global=true);
 		void point_selection(double sel_x, double sel_y);
 		void area_selection(double min_x, double max_x, double min_y, double max_y);
+		void update(double x, double y, double t);
 };
 
 #endif

@@ -25,7 +25,7 @@ class Kayak(object):
 		self.action			= KayakState()
 		self.wpts			= wpts
 		self.geo_pose_pub	= rospy.Publisher('geo_pose', GeoPose, queue_size=10)
-		self.sim_query		= rospy.ServiceProxy('SimQuery', SimQuery)
+		self.sim_query		= rospy.ServiceProxy('/SimQuery', SimQuery)
 		self.goal_idx		= 0
 		self.control_const	= 4.00
 		self.wpt_tol		= 0.01
@@ -61,7 +61,7 @@ class Kayak(object):
 		if len(self.wpts) > 0:
 
 			# Setting constant velocity
-			self.abs_vel		= 0.01
+			self.abs_vel= 0.01
 
 			# Next wpt
 			goal_wpt	= self.wpts[self.goal_idx]
@@ -88,7 +88,7 @@ class Kayak(object):
 				yaw_error += 2*math.pi
 
 			# Control effort
-			self.action.yaw			= self.max_turn*atan(self.control_const*yaw_error)/(0.5*math.pi)
+			self.action.yaw		= self.max_turn*atan(self.control_const*yaw_error)/(0.5*math.pi)
 		
 		else:
 			self.abs_vel		= 0.00
@@ -109,13 +109,13 @@ class Kayak(object):
 		try:
 			self.stu = self.sim_query(geo_pose.position).stu
 		except rospy.ServiceException, e:
-			print "Service Call Failed: %s"%e
+			rospy.loginfo("Service Call Failed: %s"%e)
 
 		# Publishing pose
 		self.geo_pose_pub.publish(geo_pose)
 
 		# Printing kayak status
-		rospy.loginfo(self)
+		# rospy.loginfo(self)
 
 def main():
 

@@ -119,20 +119,16 @@ int main(int argc, char **argv){
 	vector<pair<double, double>> glider_shape;
 	glider_shape.push_back(pair<double, double>(0.0,0.50));
 	glider_shape.push_back(pair<double, double>(0.1,0.55));
-	glider_shape.push_back(pair<double, double>(0.3,0.55));
-	glider_shape.push_back(pair<double, double>(0.5,0.65));
 	glider_shape.push_back(pair<double, double>(0.5,0.55));
-	glider_shape.push_back(pair<double, double>(0.7,0.55));
-	glider_shape.push_back(pair<double, double>(0.9,0.70));
-	glider_shape.push_back(pair<double, double>(0.9,0.55));
+	glider_shape.push_back(pair<double, double>(0.7,0.75));
+	glider_shape.push_back(pair<double, double>(0.8,0.75));
+	glider_shape.push_back(pair<double, double>(0.6,0.55));
 	glider_shape.push_back(pair<double, double>(1.0,0.55));
 	glider_shape.push_back(pair<double, double>(1.0,0.45));
-	glider_shape.push_back(pair<double, double>(0.9,0.45));
-	glider_shape.push_back(pair<double, double>(0.9,0.30));
-	glider_shape.push_back(pair<double, double>(0.7,0.45));
+	glider_shape.push_back(pair<double, double>(0.6,0.45));
+	glider_shape.push_back(pair<double, double>(0.8,0.25));
+	glider_shape.push_back(pair<double, double>(0.7,0.25));
 	glider_shape.push_back(pair<double, double>(0.5,0.45));
-	glider_shape.push_back(pair<double, double>(0.5,0.35));
-	glider_shape.push_back(pair<double, double>(0.3,0.45));
 	glider_shape.push_back(pair<double, double>(0.1,0.45));
 
 	// Kayak Shape
@@ -173,8 +169,8 @@ int main(int argc, char **argv){
 	ros::NodeHandle n;
 
 	// ros::NodeHandle np("~");
-	n.param<int>("num_kayaks", num_kayaks, NUM_ROBOTS);
-	n.param<int>("num_gliders", num_gliders, NUM_ROBOTS);
+	n.param<int>("num_kayaks", num_kayaks, 0);
+	n.param<int>("num_gliders", num_gliders, 0);
 
 	// Initializing kayaks
 	for(int i = 0; i < num_kayaks; i++){

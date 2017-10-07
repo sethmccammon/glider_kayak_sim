@@ -9,8 +9,19 @@ south_bound: 44.75
 depth: 200
 #meters
 
-num_gliders: 5
+# Topic names
+world_sim_topic: '/SimQuery'
+geo_pose_topic: 'geo_pose'
 
+# Global Parameters
+sim_update_rate: 60
+num_gliders: 3
 num_kayaks: 2
-
 sim_speedup_factor: 10
+
+# Kayak parameters
+kayak_max_turn: 0.50
+kayak_max_abs_vel: 0.01
+kayak_wpt_tol: 0.02
+kayak_control_const: 1.00
+kayak_verbose: false

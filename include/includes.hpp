@@ -13,7 +13,6 @@
 using namespace std;
 
 // Sim
-#define NUM_ROBOTS		10
 #define PI				3.14159265359
 
 // File Parameters

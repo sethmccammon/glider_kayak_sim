@@ -3,3 +3,4 @@ bags/
 *.pyc
 *~
 data/*.nc
+!data/test.nc

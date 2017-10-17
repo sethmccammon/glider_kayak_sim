@@ -1,0 +1,106 @@
+>> ncdisp('scb_das_2013012103.nc')
+Source:
+           /home/seth/catkin_ws/src/glider_kayak_sim/data/scb_das_2013012103.nc
+Format:
+           classic
+Global Attributes:
+           type    = 'ROMS REAL TIME FORECASTING'
+           title   = 'SCB-2013012103'
+           fileid  = 'SOUTH CALIFORNIA BIGHT'
+           history = 'Mon Jan 21 12:37:14 2013: ncatted -O -aunits,time,o,c,days since 2013-01-01 00:00:00 scb_das_2013012103.nc
+                     Mon Jan 21 12:37:13 2013: ncatted -O -atitle,global,o,c,SCB-2013012103 scb_das_2013012103.nc'
+Dimensions:
+           time  = 1     (UNLIMITED)
+           depth = 24
+           lat   = 111
+           lon   = 211
+Variables:
+    time 
+           Size:       1x1
+           Dimensions: time
+           Datatype:   single
+           Attributes:
+                       long_name    = 'time'
+                       units        = 'days since 2013-01-01 00:00:00'
+                       scale_factor = 1
+                       add_offset   = 0
+    depth
+           Size:       24x1
+           Dimensions: depth
+           Datatype:   single
+           Attributes:
+                       long_name    = 'depth'
+                       units        = 'meters'
+                       positive     = 'down'
+                       scale_factor = 1
+                       add_offset   = 0
+    lat  
+           Size:       111x1
+           Dimensions: lat
+           Datatype:   single
+           Attributes:
+                       long_name    = 'Latitude'
+                       units        = 'degrees_north'
+                       modulo       = ' '
+                       scale_factor = 1
+                       add_offset   = 0
+    lon  
+           Size:       211x1
+           Dimensions: lon
+           Datatype:   single
+           Attributes:
+                       long_name    = 'Longitude'
+                       units        = 'degrees_east'
+                       modulo       = ' '
+                       scale_factor = 1
+                       add_offset   = 0
+    temp 
+           Size:       211x111x24x1
+           Dimensions: lon,lat,depth,time
+           Datatype:   single
+           Attributes:
+                       long_name     = 'Temperature'
+                       units         = 'degrees C'
+                       scale_factor  = 1
+                       add_offset    = 0
+                       missing_value = -9999
+    salt 
+           Size:       211x111x24x1
+           Dimensions: lon,lat,depth,time
+           Datatype:   single
+           Attributes:
+                       long_name     = 'Salinity'
+                       units         = 'ROMS-Unit'
+                       scale_factor  = 1
+                       add_offset    = 0
+                       missing_value = -9999
+    u    
+           Size:       211x111x24x1
+           Dimensions: lon,lat,depth,time
+           Datatype:   single
+           Attributes:
+                       long_name     = 'Zonal Current'
+                       units         = 'm/s'
+                       scale_factor  = 1
+                       add_offset    = 0
+                       missing_value = -9999
+    v    
+           Size:       211x111x24x1
+           Dimensions: lon,lat,depth,time
+           Datatype:   single
+           Attributes:
+                       long_name     = 'Meridional Current'
+                       units         = 'm/s'
+                       scale_factor  = 1
+                       add_offset    = 0
+                       missing_value = -9999
+    zeta 
+           Size:       211x111x1
+           Dimensions: lon,lat,time
+           Datatype:   single
+           Attributes:
+                       long_name     = 'Sea Surface Height'
+                       units         = 'm'
+                       scale_factor  = 1
+                       add_offset    = 0
+                       missing_value = -9999

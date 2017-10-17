@@ -6,6 +6,47 @@ import rospy, rospkg
 
 
 
+class AquaticVehicle(object):
+  """docstring for AquaticVehicle"""
+  def __init__(self, arg):
+    super(AquaticVehicle, self).__init__()
+    self.arg = arg
+    
+  def getSensorData():
+    pass
+
+  def step():
+
+
+class SlocumGlider(AquaticVehicle):
+  """docstring for AquaticVehicle"""
+  def __init__(self, arg):
+    super(SlocumGlider, self).__init__()
+    self.arg = arg
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def main():
   rospy.init_node("slocum_glider")

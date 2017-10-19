@@ -1,4 +1,4 @@
-simulation_data_file: /data/scb_das_2013012103.nc
+simulation_data_file: /data/test.nc
 
 west_bound: -125
 east_bound: -124.5

@@ -16,6 +16,7 @@ class AquaticVehicle(object):
     pass
 
   def step():
+    pass
 
 
 class SlocumGlider(AquaticVehicle):

@@ -11,8 +11,6 @@
 	<node name="sim" ns="/glider_0" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
 	<node name="sim" ns="/glider_1" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
 	<node name="sim" ns="/glider_2" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
-	<node name="sim" ns="/glider_3" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
-	<node name="sim" ns="/glider_4" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
 
 	<!-- Kayaks -->
 	<node name="sim" ns="/kayak_0" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/>

@@ -1,0 +1,2 @@
+glider_kayak_sim/UnderwaterGeoPoint position
+geometry_msgs/Quaternion orientation

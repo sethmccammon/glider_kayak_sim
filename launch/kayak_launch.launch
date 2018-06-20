@@ -1,4 +1,5 @@
 <launch>
-	<arg name="kayak_idx"/>
-	<node name="sim" ns="/kayak_$(arg kayak_idx)" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/>
+	<node name="sim" pkg="glider_kayak_sim" type="ross_kayak.py" output="screen"/>
+	<node name="sensor" pkg="glider_kayak_sim" type="kayak_sensor.py" output="screen"/>
+	<node name="waypoint_chatter" pkg="glider_kayak_sim" type="waypoint_chatter.py"/>
 </launch>

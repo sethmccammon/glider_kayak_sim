@@ -1,5 +1,5 @@
 <launch>
 	<rosparam file="$(find glider_kayak_sim)/yaml/sim_params.yaml"/>
+	<include file="$(find glider_kayak_sim)/launch/vehicles.launch"/>
 	<node name="world_sim" pkg="glider_kayak_sim" type="world_sim.py" output="screen"/>
-	<node name="marine_viz" pkg="glider_kayak_sim" type="marine_viz" output="screen"/>
 </launch>

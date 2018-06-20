@@ -1,27 +1,251 @@
 simulation_data_file: /data/test.nc
 
-west_bound: -125
-east_bound: -124.5
-north_bound: 45.25
-south_bound: 44.75
-#decimal degrees lat/lon
+start_date: '2017/10/01'
+end_date: '2017/10/04'
 
-depth: 200
-#meters
+# use_sim_time: true
 
 # Topic names
 world_sim_topic: '/SimQuery'
-geo_pose_topic: 'geo_pose'
+world_snapshot_topic: '/WorldSnapshot'
+world_bounds_topic: '/WorldBounds'
+underwater_geo_pose_topic: 'underwater_geo_pose'
+robot_pose_topic: 'pose'
+robot_sensor_topic: 'stu_sensor'
+robot_waypoint_topic: 'wpt_cmd'
 
-# Global Parameters
-sim_update_rate: 60
-num_gliders: 3
+kayak_namespace: '/kayak_%d/'
+glider_namespace: '/glider_%d/'
+
+# World Parameters
 num_kayaks: 2
-sim_speedup_factor: 10
+num_gliders: 1
+sim_speedup_factor: 1
+sim_update_rate: 100
+waypoint_publish_rate: 15 #Seconds
 
 # Kayak parameters
-kayak_max_turn: 0.50
-kayak_max_abs_vel: 0.01
-kayak_wpt_tol: 0.02
+kayak_publish_rate: .1 #Seconds
+kayak_max_turn: 0.50      # Radians/Second
+kayak_max_abs_vel: 0.10   # Meters/Second
+kayak_wpt_tol: 0.02       # Meters
+kayak_max_turn: 3.50        # Radians/Second
+kayak_max_vel: 1.0          # Meters/Second
+kayak_waypoint_tolerance: .03 # Deg Lat/Lon
 kayak_control_const: 1.00
 kayak_verbose: false
+
+# Glider Parameters
+glider_min_depth: 5     # Meters
+glider_max_depth: 150   # Meters
+glider_surface_interval: 3  #Hours
+
+viz_bool: {
+  full_screen: true,
+}
+viz_int: {
+  pointer_size: 16,
+  scn_width: 1920,
+  scn_height: 1200,
+  topic_queue_size: 100,
+  topic_queue_size: 100,
+  hist_size: 500,
+}
+viz_float: {
+  world_sim_timeout: 1200,
+  zoom_speed: 1.07,
+  cam_speed: 10.0,
+  mouse_m_speed: 5.0,
+  scn_scale_def: 0.001,
+  scn_scale: 0.01,
+  vector_decimation: 20000,
+  kayak_size: 0.02,
+  glider_size: 0.02,
+  flag_size: 0.01,
+  pointer_angle: -60.0,
+  botton_width: 200.0,
+  botton_height: 30.0,
+  botton_padding: 15.0,
+}
+viz_string: {
+  kayak_stroke: 'WHITE',
+  kayak_fill: 'TBLACK',
+  glider_stroke: 'WHITE',
+  glider_fill: 'NONE',
+  flag_stroke: 'WHITE',
+  flag_fill: 'NONE',
+  pointer_stroke: 'WHITE',
+  pointer_fill: 'BLACK',
+  button_stroke: 'GREEN',
+  button_fill: 'TBLACK',
+  glider_shape: '/csv/glider_shape.csv',
+  kayak_shape: '/csv/kayak_shape.csv',
+  pointer_shape: '/csv/pointer_shape.csv',
+  goal_shape: '/csv/goal_shape.csv',
+  window_title: 'Video',
+}
+viz_keys: {
+  up: 'w',
+  down: 's',
+  left: 'a',
+  right: 'd',
+}
+viz_bkeys: {
+  zoon_in: 'e',
+  zoon_out: 'q',
+  reset_zoom: 'z',
+  reset_view_pos: 'h',
+  lock_view_robot: 'l',
+  increase_depth: 'f',
+  decrease_depth: 'r',
+  switch_raster: 't',
+  switch_currents: 'g',
+}
+
+depths: [0, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 800, 1000, 1200]
+
+web_viz: {
+  host_name: 'localhost',
+  web_gui_port: 4040,
+  update_raster_ms: 5000,
+  bkg_projection: 'EPSG:3857',
+  ros_projection: 'EPSG:3857',
+  enable_3d: false,
+  origin_lat_lon: [-121.946976, 36.804731],
+  initial_zoom: 10,
+  max_zoom: 15,
+  coordinate_format: 'XY',
+  coordinate_digits: 3,
+  scale_units: 'metric',
+  scale_width: 100,
+  preload: 0,
+  beyond_limit_color: 'extend',
+  roi: [-122.886, 36.337, -121.263, 37.254],
+}
+
+wms_server: {
+  title: 'Tile Server',
+  cache: false,
+  verbose: false,
+  ip: 'localhost',
+  port: 8080,
+  datapath: '/wms',
+  protocol: 'http',
+}
+
+wms_datasets: {
+  gebco: {
+    title: 'GEBCO',
+    id: 'GEBCO',
+    updateInterval: '-1',
+    location: 'data/GEBCO_2014_2D.nc',
+  },
+  roms: {
+    title: 'ROMS',
+    id: 'ROMS',
+    updateInterval: '1',
+    location: 'data/roms.nc',
+  },
+  ros_mapping: {
+    title: 'ROS_MAPPING',
+    id: 'ROS_MAPPING',
+    updateInterval: '1',
+    location: 'data/ros_data_out.nc',
+  },
+}
+
+vector_layers: {
+  coastline: {
+    title: 'Coastline',
+    visible: false,
+    url: 'geojson/coastline.json',
+    fill: 'rgb(183, 124, 84)',
+    stroke: {
+      color: 'rgb(0, 36, 96)',
+      lineCap: 'round',
+      lineJoin: 'round',
+      lineDash: [2,5],
+      lineDashOffset: '0',
+      miterLimit: 10,
+      width: 2,
+    },
+  },
+  land: {
+    title: 'Land',
+    visible: false,
+    url: 'geojson/land.json',
+    fill: 'rgb(183, 124, 84)',
+    stroke: {
+      color: 'black',
+      lineCap: 'round',
+      lineJoin: 'round',
+      lineDash: [1,0],
+      lineDashOffset: '0',
+      miterLimit: 10,
+      width: 2,
+    },
+  },
+  ocean: {
+    title: 'Ocean',
+    visible: false,
+    url: 'geojson/ocean.json',
+    fill: 'rgb(165, 199, 255)',
+    stroke: {
+      color: 'black',
+      lineCap: 'round',
+      lineJoin: 'round',
+      lineDash: [1,0],
+      lineDashOffset: '0',
+      miterLimit: 10,
+      width: 2,
+    },
+  },
+}
+
+online_layers: {
+  World_Topo_Map: {
+    title: 'World Topo Map',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  World_Terrain_Base: {
+    title: 'World Terrain Base',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  World_Street_Map: {
+    title: 'World Street Map',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  World_Shaded_Relief: {
+    title: 'World Shaded Relief',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  World_Physical_Map: {
+    title: 'World Physical Map',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  World_Imagery: {
+    title: 'World Imagery',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  USA_Topo_Maps: {
+    title: 'USA Topo Maps',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/USA_Topo_Maps/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  Ocean_Basemap: {
+    title: 'Ocean Basemap',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/Ocean_Basemap/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+  NatGeo_World_Map: {
+    title: 'NatGeo World Map',
+    visible: false,
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/NatGeo_World_Map/MapServer/MapServer/tile/{z}/{y}/{x}',
+  },
+}

@@ -1,0 +1,5 @@
+---
+float32 n_bound
+float32 s_bound
+float32 e_bound
+float32 w_bound

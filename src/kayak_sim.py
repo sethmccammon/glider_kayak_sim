@@ -31,8 +31,10 @@ class Kayak(object):
 					max_abs_vel,
 					wpt_tol,
 					control_const,
+					sim_speedup_factor,
+					sim_update_rate,
 					world_sim_topic,
-					geo_pose_topic,
+					underwater_geo_pose_topic,
 					verbose=False,
 					wpts=[],
 					latitude=0.0,
@@ -40,25 +42,27 @@ class Kayak(object):
 				):
 
 		# Model parameters
-		self.max_turn			= max_turn
-		self.max_abs_vel		= max_abs_vel
-		self.wpt_tol			= wpt_tol
-		self.control_const		= control_const
-		self.world_sim_topic	= world_sim_topic
-		self.geo_pose_topic		= geo_pose_topic
+		self.max_turn					= max_turn
+		self.max_abs_vel				= max_abs_vel
+		self.wpt_tol					= wpt_tol
+		self.control_const				= control_const
+		self.sim_speedup_factor			= sim_speedup_factor
+		self.sim_update_rate			= sim_update_rate
+		self.world_sim_topic			= world_sim_topic
+		self.underwater_geo_pose_topic	= underwater_geo_pose_topic
 
 		# Internal variables
-		self.verbose			= verbose
-		self.abs_vel			= 0.00
-		self.goal_idx			= 0
-		self.wpts				= wpts
-		self.stu				= STU()
-		self.state				= KayakState(latitude=latitude, longitude=longitude)
-		self.action				= KayakState()
+		self.verbose					= verbose
+		self.abs_vel					= 0.00
+		self.goal_idx					= 0
+		self.wpts						= wpts
+		self.stu						= STU()
+		self.state						= KayakState(latitude=latitude, longitude=longitude)
+		self.action						= KayakState()
 
 		# Ros-related
-		self.geo_pose_pub		= rospy.Publisher(geo_pose_topic, GeoPose, queue_size=10)
-		self.sim_query			= rospy.ServiceProxy(world_sim_topic, SimQuery)
+		self.underwater_geo_pose_pub	= rospy.Publisher(underwater_geo_pose_topic, UnderwaterGeoPose, queue_size=10)
+		self.sim_query					= rospy.ServiceProxy(world_sim_topic, SimQuery)
 
 	def __str__(self):
 		ret_str = ""
@@ -68,15 +72,15 @@ class Kayak(object):
 		ret_str += " Temp: %06.2f Sal: %06.2f"			% (self.stu.temperature, self.stu.salinity)
 		ret_str += " Current: (%06.2f,%06.2f,%06.2f)"	% (self.stu.current.x, self.stu.current.y, self.stu.current.z)
 		if len(self.wpts) > 0:
-			ret_str += " Goal[%d]: (%06.2f,%06.2f)"		% (self.goal_idx, self.wpts[self.goal_idx].position.longitude, self.wpts[self.goal_idx].position.latitude)
+			ret_str += " Goal[%d]: (%06.2f,%06.2f)"		% (self.goal_idx, self.wpts[self.goal_idx].position.latitude, self.wpts[self.goal_idx].position.longitude)
 		return ret_str
 
-	def get_geo_pose(self):
+	def get_underwater_geo_pose(self):
 		orientation				= tf.transformations.quaternion_from_euler(0.0, 0.0, self.state.yaw)
-		pose					= GeoPose()
+		pose					= UnderwaterGeoPose()
 		pose.position.latitude	= self.state.latitude
 		pose.position.longitude	= self.state.longitude
-		pose.position.altitude	= 0.0
+		pose.position.depth		= 0.0
 		pose.orientation.x		= orientation[0]
 		pose.orientation.y		= orientation[1]
 		pose.orientation.z		= orientation[2]
@@ -84,6 +88,8 @@ class Kayak(object):
 		return pose
 
 	def update(self):
+
+		increment_rate = float(self.sim_speedup_factor)/self.sim_update_rate
 
 		if len(self.wpts) > 0:
 
@@ -96,6 +102,8 @@ class Kayak(object):
 			# Rectangular coordinates to next wpt
 			goal_dx		= goal_wpt.position.longitude	- self.state.longitude
 			goal_dy		= goal_wpt.position.latitude	- self.state.latitude
+
+			# print 'self.state.longitude: %9.3f goal_wpt.position.longitude: %9.3f goal_dx: %9.3f' %(self.state.longitude, goal_wpt.position.longitude, goal_dx)
 
 			# Polar coordinates to next wpt
 			goal_dist	= sqrt(goal_dx**2 + goal_dy**2)
@@ -125,56 +133,60 @@ class Kayak(object):
 		self.action.latitude	= self.abs_vel*sin(self.state.yaw)
 
 		# Updating state (integrating actions)
-		self.state.yaw			+= self.action.yaw
-		self.state.longitude	+= self.action.longitude
-		self.state.latitude		+= self.action.latitude
+		self.state.yaw			+= self.action.yaw*increment_rate
+		self.state.longitude	+= self.action.longitude*increment_rate
+		self.state.latitude		+= self.action.latitude*increment_rate
 		if self.state.yaw > math.pi:
 			self.state.yaw -= 2*math.pi
 		if self.state.yaw < -math.pi:
 			self.state.yaw += 2*math.pi
 
-		# GeoPose Message
-		geo_pose = self.get_geo_pose()
+		# UnderwaterGeoPose Message
+		underwater_geo_pose = self.get_underwater_geo_pose()
 
 		# Sensor reading 
 		try:
-			self.stu = self.sim_query(geo_pose.position).stu
+			self.stu = self.sim_query(underwater_geo_pose.position).stu
 		except rospy.ServiceException, e:
-			rospy.loginfo("Service Call Failed: %s" % e)
+			pass
+			# rospy.loginfo("kayak_sim: Service Call Failed: %s" % e)
 
 		# Publishing pose
-		self.geo_pose_pub.publish(geo_pose)
+		self.underwater_geo_pose_pub.publish(underwater_geo_pose)
 
 		# Printing kayak status
 		if self.verbose:
-			rospy.loginfo(self)
+			rospy.loginfo('kayak_sim %s' % self.__str__())
 
 def main():
 	
 	rospy.init_node("kayak_sim")
 
 	# Global parameters
-	sim_update_rate		= rospy.get_param("/sim_update_rate")
-	world_sim_topic		= rospy.get_param("/world_sim_topic")
-	geo_pose_topic		= rospy.get_param("/geo_pose_topic")
+	sim_speedup_factor				= rospy.get_param("/sim_speedup_factor")
+	sim_update_rate					= rospy.get_param("/sim_update_rate")
+	world_sim_topic					= rospy.get_param("/world_sim_topic")
+	underwater_geo_pose_topic		= rospy.get_param("/underwater_geo_pose_topic")
 
 	# Global Kayak parameters
-	max_turn			= rospy.get_param("/kayak_max_turn",		0.10)
-	max_abs_vel			= rospy.get_param("/kayak_max_abs_vel",		0.01)
-	wpt_tol				= rospy.get_param("/kayak_wpt_tol",			0.01)
-	control_const		= rospy.get_param("/kayak_control_const",	4.00)
-	verbose				= rospy.get_param("/kayak_verbose",			False)
+	max_turn						= rospy.get_param("/kayak_max_turn",		0.10)
+	max_abs_vel						= rospy.get_param("/kayak_max_abs_vel",		0.01)
+	wpt_tol							= rospy.get_param("/kayak_wpt_tol",			0.01)
+	control_const					= rospy.get_param("/kayak_control_const",	4.00)
+	verbose							= rospy.get_param("/kayak_verbose",			False)
 
 	# Goal Waypoints
-	rnd_loc = 1+random.random();
+	rnd_loc = random.random();
 	wpts_list = [
-					(0.0, rnd_loc),
-					(rnd_loc, rnd_loc),
-					(rnd_loc, 0.0),
-					(0.0, 0.0),
+					(-122.550,36.465),
+					(-122.530,36.870),
+					(-122.200,36.500),
+					(-122.050,36.870),
+					(-122.900,36.700),
+					(-122.570,36.720),
 				]
 	wpts = []
-	for wpt in wpts_list:
+	for wpt in random.sample(wpts_list,4):
 		w = WayPoint()
 		w.position.longitude	= wpt[0]
 		w.position.latitude		= wpt[1]
@@ -183,14 +195,18 @@ def main():
 
 	# Init Kayak
 	kayak = Kayak(
-					max_turn		= max_turn,
-					max_abs_vel		= max_abs_vel,
-					wpt_tol			= wpt_tol,
-					control_const	= control_const,
-					verbose			= verbose,
-					world_sim_topic	= world_sim_topic,
-					geo_pose_topic	= geo_pose_topic,
-					wpts			=wpts,
+					max_turn					= max_turn,
+					max_abs_vel					= max_abs_vel,
+					wpt_tol						= wpt_tol,
+					control_const				= control_const,
+					verbose						= verbose,
+					sim_speedup_factor			= sim_speedup_factor,
+					sim_update_rate				= sim_update_rate,
+					world_sim_topic				= world_sim_topic,
+					underwater_geo_pose_topic	= underwater_geo_pose_topic,
+					wpts						= wpts,
+					longitude					= -121.7,
+					latitude					= 36.4,
 				)
 
 	# Running sim

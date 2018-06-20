@@ -1,0 +1,9 @@
+uint8 ocean_feature
+
+# 0 = Temperature
+# 1 = Salinity
+# 2 = Current_U
+# 3 = Current_V
+# 4 = Bathymetry
+---
+glider_kayak_sim/Array3D snapshot

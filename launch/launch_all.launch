@@ -2,18 +2,27 @@
 
 	<!-- ROS Param -->
 	<rosparam file="$(find glider_kayak_sim)/yaml/sim_params.yaml"/>
+	<param name="package_path" value="$(find glider_kayak_sim)"/>
 
-	<!-- World Sim and Viz -->
-	<node name="world_sim" pkg="glider_kayak_sim" type="world_sim.py" output="screen"/>
-	<node name="marine_viz" pkg="glider_kayak_sim" type="marine_viz" output="screen"/>
+	<!-- Simulator -->
+	<include file="$(find glider_kayak_sim)/launch/world_launch.launch"/>
+
+	<!-- Viz -->
+	<node name="wms_server" pkg="glider_kayak_sim" type="wms_server.py" output="screen"/>
+	<node name="ros_web_interface" pkg="glider_kayak_sim" type="ros_web_interface.py" output="log"/>
 
 	<!-- Gliders -->
-	<node name="sim" ns="/glider_0" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
-	<node name="sim" ns="/glider_1" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
+	<!-- <node name="sim" ns="/glider_0" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/> -->
+<!-- 	<node name="sim" ns="/glider_1" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
 	<node name="sim" ns="/glider_2" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
+	<node name="sim" ns="/glider_3" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/>
+	<node name="sim" ns="/glider_4" pkg="glider_kayak_sim" type="slocum_glider.py" output="screen"/> -->
 
 	<!-- Kayaks -->
-	<node name="sim" ns="/kayak_0" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/>
-	<node name="sim" ns="/kayak_1" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/>
+<!-- 	<node name="sim" ns="/kayak_0" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/>
+	<node name="sensor" ns="/kayak_0" pkg="glider_kayak_sim" type="kayak_sensor.py" output="screen"/>
+	<node name="sim" ns="/kayak_1" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/> -->
+<!-- 	<node name="sim" ns="/kayak_0" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/>
+	<node name="sim" ns="/kayak_1" pkg="glider_kayak_sim" type="kayak_sim.py" output="screen"/> -->
 
 </launch>

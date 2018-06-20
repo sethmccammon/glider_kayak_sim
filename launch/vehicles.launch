@@ -1,0 +1,4 @@
+<launch>
+	<include file="$(find glider_kayak_sim)/launch/kayak_launch.launch" ns="/kayak_0"/>
+	<include file="$(find glider_kayak_sim)/launch/kayak_launch.launch" ns="/kayak_1"/>
+</launch>

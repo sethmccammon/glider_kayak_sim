@@ -1,61 +1,33 @@
 #!/usr/bin/env python
 
-import rospy, rospkg
+import rospy, random
 
-
-
-
-
-class AquaticVehicle(object):
-  """docstring for AquaticVehicle"""
-  def __init__(self, arg):
-    super(AquaticVehicle, self).__init__()
-    self.arg = arg
-    
-  def getSensorData():
-    pass
-
-  def step():
-    pass
-
-
-class SlocumGlider(AquaticVehicle):
-  """docstring for AquaticVehicle"""
-  def __init__(self, arg):
-    super(SlocumGlider, self).__init__()
-    self.arg = arg
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+from vehicles import SlocumGlider
 
 
 
 
 def main():
   rospy.init_node("slocum_glider")
+  rospy.wait_for_service('SimQuery')
 
+  n_bound = rospy.get_param('sim_n_bound')
+  s_bound = rospy.get_param('sim_s_bound')
+  e_bound = rospy.get_param('sim_e_bound')
+  w_bound = rospy.get_param('sim_w_bound')
+  
+  start_lat = 36.804731# random.uniform(n_bound, s_bound)
+  start_lon = -121.946976# random.uniform(e_bound, w_bound)
+  start_depth = 0.0
+  start_pitch = 0.0
+  start_heading = random.uniform(0, 360)
 
+  kayak = SlocumGlider(start_lat, start_lon, start_depth, start_pitch, start_heading)
 
   rate = rospy.Rate(10) # 10hz spin
   while not rospy.is_shutdown():
+    kayak.update()
+    print kayak.position
     rate.sleep()
   rospy.spin()
 

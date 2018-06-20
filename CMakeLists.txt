@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(glider_kayak_sim)
 
 # add_compile_options(-std=c++11)
-add_definitions(-lm -w -lGL -lGLU -lglut -lX11 -std=c++11 -lX11)
+add_definitions(-lm -w -lGL -lGLU -lglut -lX11 -std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -25,14 +25,21 @@ find_package(OpenGL REQUIRED)
 add_message_files(
   FILES
   STU.msg
+  Array3D.msg
   KayakStatus.msg
   GliderStatus.msg
+  UnderwaterGeoPoint.msg
+  UnderwaterGeoPointStamped.msg
+  UnderwaterGeoPose.msg
+  UnderwaterGeoPoseStamped.msg
 )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
   SimQuery.srv
+  SimSnapshot.srv
+  SimBounds.srv
 )
 
 # Generate added messages and services with any dependencies listed here
@@ -41,6 +48,7 @@ generate_messages(
   std_msgs
   geographic_msgs
   geometry_msgs
+  glider_kayak_sim
 )
 
 ###################################
@@ -59,6 +67,7 @@ catkin_package(
 
 add_library(marine_gl
   lib/Wired.cpp
+  lib/Raster.cpp
 )
 
 include_directories(
